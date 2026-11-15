@@ -301,7 +301,7 @@ HTML_CONTENT = """<!DOCTYPE html>
     .switch{position:relative;width:36px;height:21px;flex:none}.switch input{opacity:0;width:0;height:0}
     .switch-ui{position:absolute;inset:0;background:#cbd3cc;border-radius:99px;transition:.18s}
     .switch-ui:before{content:"";position:absolute;height:15px;width:15px;left:3px;top:3px;background:white;border-radius:50%;transition:.18s;box-shadow:0 1px 2px #0002}
-    .switch input:checked+.switch-ui{background:var(--green)}.switch input:checked+.switch-ui:before{transform:translateX(15px)}
+    .switch input:checked+.switch-ui{background:var(--green)}.switch input:checked+.switch-ui:before{transform:translateX(15px)}.switch:focus-within .switch-ui{outline:3px solid rgba(38,115,77,.35);outline-offset:3px}
     .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
     .btn{border:1px solid var(--line);background:white;color:var(--ink);border-radius:8px;min-height:40px;padding:9px 12px;font-weight:700;font-size:12px}
     .btn:hover{background:#f8faf8;border-color:#cbd7cd}.btn-primary{grid-column:1/-1;background:var(--green);border-color:var(--green);color:white;min-height:44px;font-size:13px}
@@ -355,10 +355,11 @@ HTML_CONTENT = """<!DOCTYPE html>
         <div class="range-ends"><span>10</span><span>250</span></div>
         <div class="toggle-row"><div class="toggle-copy"><strong>Adaptive recommendations</strong><small>Compare contextual learning with random selection</small></div><label class="switch"><input id="hybridToggle" type="checkbox" checked aria-label="Use adaptive recommendations"><span class="switch-ui"></span></label></div>
         <div class="actions">
-          <button id="runBtn" class="btn btn-primary" type="button" onclick="runSimulation()"><span id="runSpinner" class="sr-only">Working. </span><span id="runText">Run simulation</span></button>
+          <button id="runBtn" class="btn btn-primary" type="button" onclick="runSimulation()"><span id="runText">Run simulation</span></button>
           <button class="btn" type="button" onclick="stepOneTick()">One step</button>
           <button class="btn" type="button" onclick="switchChartTab('portfolio');document.getElementById('analyticsTitle').scrollIntoView({behavior:'smooth',block:'start'})">View portfolio</button>
         </div>
+        <div id="runStatus" class="sr-only" role="status" aria-live="polite"></div>
         <div style="text-align:right"><button class="reset" type="button" onclick="resetSimulation()">Reset this demo</button></div>
         <div class="control-foot"><strong>What you’re seeing</strong><br>Sample transactions, simulated choices and illustrative market movement. Nothing here is connected to an account or a real investment.</div>
       </aside>
@@ -370,10 +371,10 @@ HTML_CONTENT = """<!DOCTYPE html>
         </div>
         <section class="panel panel-pad" aria-labelledby="analyticsTitle">
           <div class="panel-heading"><div><h2 id="analyticsTitle" class="section-title">How the approach learns</h2><p class="section-note">Compare the adaptive strategy with a random baseline.</p></div>
-            <div class="chart-tabs" role="tablist" aria-label="Choose a chart">
-              <button id="tabRewards" class="chart-tab active" type="button" role="tab" aria-selected="true" onclick="switchChartTab('rewards')">Learning</button>
-              <button id="tabPortfolio" class="chart-tab" type="button" role="tab" aria-selected="false" onclick="switchChartTab('portfolio')">Portfolio</button>
-              <button id="tabAcceptance" class="chart-tab" type="button" role="tab" aria-selected="false" onclick="switchChartTab('acceptance')">Acceptance</button>
+            <div class="chart-tabs" aria-label="Choose a chart">
+              <button id="tabRewards" class="chart-tab active" type="button" aria-pressed="true" onclick="switchChartTab('rewards')">Learning</button>
+              <button id="tabPortfolio" class="chart-tab" type="button" aria-pressed="false" onclick="switchChartTab('portfolio')">Portfolio</button>
+              <button id="tabAcceptance" class="chart-tab" type="button" aria-pressed="false" onclick="switchChartTab('acceptance')">Acceptance</button>
             </div>
           </div>
           <div id="viewRewards" class="chart-grid"><section class="chart-box" aria-label="Accepted prompt comparison"><h3>Accepted prompts</h3><div class="chart-wrap"><canvas id="rewardChart" role="img" aria-label="Cumulative accepted prompts for adaptive and random strategies"></canvas></div></section><section class="chart-box" aria-label="Regret comparison"><h3>Cumulative regret</h3><div class="chart-wrap"><canvas id="regretChart" role="img" aria-label="Cumulative regret for adaptive and random strategies"></canvas></div></section></div>
@@ -400,7 +401,7 @@ HTML_CONTENT = """<!DOCTYPE html>
     function switchChartTab(tab){
       const views={rewards:"viewRewards",portfolio:"viewPortfolio",acceptance:"viewAcceptance"};
       const buttons={rewards:"tabRewards",portfolio:"tabPortfolio",acceptance:"tabAcceptance"};
-      Object.keys(views).forEach(function(key){document.getElementById(views[key]).hidden=key!==tab;const b=document.getElementById(buttons[key]);b.classList.toggle("active",key===tab);b.setAttribute("aria-selected",key===tab?"true":"false");});
+      Object.keys(views).forEach(function(key){document.getElementById(views[key]).hidden=key!==tab;const b=document.getElementById(buttons[key]);b.classList.toggle("active",key===tab);b.setAttribute("aria-pressed",key===tab?"true":"false");});
       if(tab==="portfolio"&&portfolioChartInstance)portfolioChartInstance.resize();
       if(tab==="acceptance"&&rollingChartInstance)rollingChartInstance.resize();
       if(tab==="rewards"&&rewardChartInstance){rewardChartInstance.resize();regretChartInstance.resize();}
@@ -452,9 +453,9 @@ HTML_CONTENT = """<!DOCTYPE html>
     async function fetchState(){try{renderDashboard(await apiCall("/api/state"));}catch(e){console.error("Could not load simulation state",e);}}
     async function runSimulation(){
       const btn=document.getElementById("runBtn"),text=document.getElementById("runText"),hybrid=document.getElementById("hybridToggle").checked;
-      btn.disabled=true;text.textContent="Running simulation…";
-      try{renderDashboard(await apiCall("/api/simulate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ticks:Number(slider.value),use_hybrid:hybrid})}));}
-      catch(e){text.textContent="Could not run — try again";console.error(e);}
+      btn.disabled=true;text.textContent="Running simulation…";document.getElementById("runStatus").textContent="Running simulation.";
+      try{renderDashboard(await apiCall("/api/simulate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ticks:Number(slider.value),use_hybrid:hybrid})}));document.getElementById("runStatus").textContent="Simulation complete."; }
+      catch(e){text.textContent="Could not run — try again";document.getElementById("runStatus").textContent="Simulation failed. Please try again.";console.error(e);}
       finally{btn.disabled=false;if(text.textContent==="Running simulation…")text.textContent="Run simulation";else setTimeout(function(){text.textContent="Run simulation";},2200);}
     }
     async function stepOneTick(){
