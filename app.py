@@ -317,7 +317,7 @@ HTML_CONTENT = """<!DOCTYPE html>
     .chart-tabs{display:flex;gap:4px;padding:3px;border:1px solid var(--line);background:#f8faf8;border-radius:8px;flex:none}
     .chart-tab{background:transparent;border:0;color:var(--muted);font-size:10px;font-weight:700;padding:6px 8px;border-radius:5px}
     .chart-tab.active{background:white;color:var(--green-dark);box-shadow:0 1px 3px #1b36251c}
-    .chart-wrap{height:260px;position:relative}.chart-wrap.tall{height:300px}
+    .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.chart-box h3{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 8px}.chart-wrap{height:220px;position:relative}.chart-wrap.tall{height:300px}
     .chart-legend{font-size:11px;color:var(--muted);display:flex;gap:16px;margin-top:12px;align-items:center}
     .legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--green)}.legend-dot.gray{background:#9ba69d}
     .activity{margin-top:16px}.table-wrap{overflow:auto}
@@ -333,7 +333,7 @@ HTML_CONTENT = """<!DOCTYPE html>
     .footer-note{color:#879188;font-size:10px;margin:17px 2px 0}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
     @media(max-width:850px){.layout{grid-template-columns:1fr}.controls{position:static}}
-    @media(max-width:600px){.topbar{height:58px}.topbar-inner,.wrap{width:calc(100% - 28px)}.wrap{padding:27px 0 42px}.intro{display:block;margin-bottom:20px}.demo-tag{display:inline-block;margin-top:14px}.metrics{grid-template-columns:1fr 1fr}.metric{padding:14px;min-height:100px}.metric:last-child{grid-column:1/-1}.metric-value{font-size:22px}.panel-pad{padding:16px}.panel-heading{display:block}.chart-tabs{margin-top:13px;width:max-content;max-width:100%}.chart-tab{padding:6px 7px}.chart-wrap{height:220px}.chart-wrap.tall{height:250px}.topmeta{font-size:10px}}
+    @media(max-width:600px){.topbar{height:58px}.topbar-inner,.wrap{width:calc(100% - 28px)}.wrap{padding:27px 0 42px}.intro{display:block;margin-bottom:20px}.demo-tag{display:inline-block;margin-top:14px}.metrics{grid-template-columns:1fr 1fr}.metric{padding:14px;min-height:100px}.metric:last-child{grid-column:1/-1}.metric-value{font-size:22px}.panel-pad{padding:16px}.panel-heading{display:block}.chart-tabs{margin-top:13px;width:max-content;max-width:100%}.chart-tab{padding:6px 7px}.chart-grid{grid-template-columns:1fr}.chart-wrap{height:220px}.chart-wrap.tall{height:250px}.topmeta{font-size:10px}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
   </style>
 </head>
@@ -376,7 +376,7 @@ HTML_CONTENT = """<!DOCTYPE html>
               <button id="tabAcceptance" class="chart-tab" type="button" role="tab" aria-selected="false" onclick="switchChartTab('acceptance')">Acceptance</button>
             </div>
           </div>
-          <div id="viewRewards" class="chart-wrap"><canvas id="rewardChart" role="img" aria-label="Cumulative accepted prompts for adaptive and random strategies"></canvas></div>
+          <div id="viewRewards" class="chart-grid"><section class="chart-box" aria-label="Accepted prompt comparison"><h3>Accepted prompts</h3><div class="chart-wrap"><canvas id="rewardChart" role="img" aria-label="Cumulative accepted prompts for adaptive and random strategies"></canvas></div></section><section class="chart-box" aria-label="Regret comparison"><h3>Cumulative regret</h3><div class="chart-wrap"><canvas id="regretChart" role="img" aria-label="Cumulative regret for adaptive and random strategies"></canvas></div></section></div>
           <div id="viewPortfolio" class="chart-wrap tall" hidden><canvas id="portfolioChart" role="img" aria-label="Illustrative simulated portfolio balance and contributions"></canvas></div>
           <div id="viewAcceptance" class="chart-wrap tall" hidden><canvas id="rollingChart" role="img" aria-label="Rolling acceptance rates for adaptive and random strategies"></canvas></div>
           <div class="chart-legend"><span><i class="legend-dot"></i>Adaptive</span><span><i class="legend-dot gray"></i>Random baseline</span><span id="kpiLift" class="subtle">0.0% difference</span></div>
