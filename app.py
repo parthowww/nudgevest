@@ -317,7 +317,7 @@ HTML_CONTENT = """<!DOCTYPE html>
     .chart-tabs{display:flex;gap:4px;padding:3px;border:1px solid var(--line);background:#f8faf8;border-radius:8px;flex:none}
     .chart-tab{background:transparent;border:0;color:var(--muted);font-size:10px;font-weight:700;padding:6px 8px;border-radius:5px}
     .chart-tab.active{background:white;color:var(--green-dark);box-shadow:0 1px 3px #1b36251c}
-    .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.chart-box h3{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 8px}.chart-wrap{height:220px;position:relative}.chart-wrap.tall{height:300px}
+    .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.chart-grid[hidden]{display:none}.chart-box h3{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 8px}.chart-wrap{height:220px;position:relative}.chart-wrap.tall{height:300px}
     .chart-legend{font-size:11px;color:var(--muted);display:flex;gap:16px;margin-top:12px;align-items:center}
     .legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--green)}.legend-dot.gray{background:#9ba69d}
     .activity{margin-top:16px}.table-wrap{overflow:auto}
