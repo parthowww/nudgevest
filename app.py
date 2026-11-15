@@ -262,465 +262,216 @@ def api_reset():
 HTML_CONTENT = """<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NudgeVest — Behavioral Micro-Investing MVP</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Inter Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .tab-active { border-bottom: 2px solid #10B981; color: #10B981; font-weight: 600; }
-        .pulse-live { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8f5">
+  <title>NudgeVest — Saving habits, made visible</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{--paper:#f7f8f5;--white:#fff;--ink:#202923;--muted:#68736b;--line:#e3e8e2;--green:#26734d;--green-dark:#1b5b3b;--green-pale:#e6f1e9;--shadow:0 1px 2px rgba(25,45,32,.04)}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:"DM Sans",sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+    button,input{font:inherit}button{cursor:pointer}
+    button:focus-visible,input:focus-visible{outline:3px solid rgba(38,115,77,.28);outline-offset:2px}
+    .topbar{height:68px;background:rgba(255,255,255,.88);border-bottom:1px solid var(--line);display:flex;align-items:center}
+    .topbar-inner{width:min(1180px,calc(100% - 48px));margin:auto;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:10px;font-family:Manrope,sans-serif;font-size:17px;font-weight:800;letter-spacing:-.04em}
+    .brand-mark{width:28px;height:28px;background:var(--green);color:white;border-radius:8px;display:grid;place-items:center;font-size:15px}
+    .topmeta{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}
+    .status-dot{width:7px;height:7px;border-radius:50%;background:#9ba69d;display:inline-block}
+    .wrap{width:min(1180px,calc(100% - 48px));margin:0 auto;padding:38px 0 64px}
+    .intro{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:26px}
+    .eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:10px;font-weight:700;color:var(--green);margin-bottom:8px}
+    h1,h2,h3,p{margin-top:0}h1{font-family:Manrope,sans-serif;font-size:clamp(27px,4vw,36px);letter-spacing:-.055em;line-height:1.12;margin-bottom:9px;font-weight:700}
+    .intro p{color:var(--muted);font-size:14px;margin-bottom:0}
+    .demo-tag{white-space:nowrap;border:1px solid #d6e1d8;background:#f0f5f0;color:var(--green-dark);border-radius:999px;padding:7px 11px;font-size:11px;font-weight:700;letter-spacing:.02em}
+    .layout{display:grid;grid-template-columns:minmax(280px,.76fr) minmax(0,1.55fr);gap:16px;align-items:start}
+    .panel{background:var(--white);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}.panel-pad{padding:20px}
+    .section-title{font-family:Manrope,sans-serif;font-size:15px;letter-spacing:-.025em;font-weight:700;margin:0}
+    .section-note{font-size:12px;color:var(--muted);margin:5px 0 0}
+    .controls{position:sticky;top:16px}.control-head{padding-bottom:17px;border-bottom:1px solid var(--line);margin-bottom:17px}
+    .field-label{font-size:12px;font-weight:700;display:flex;justify-content:space-between;gap:12px;margin-bottom:8px}
+    .field-label span:last-child{color:var(--green);font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:var(--green)}.range-ends{display:flex;justify-content:space-between;color:#879188;font-size:10px;margin-top:2px}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;border-top:1px solid var(--line);margin-top:16px}
+    .toggle-copy strong{font-size:12px;display:block}.toggle-copy small{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+    .switch{position:relative;width:36px;height:21px;flex:none}.switch input{opacity:0;width:0;height:0}
+    .switch-ui{position:absolute;inset:0;background:#cbd3cc;border-radius:99px;transition:.18s}
+    .switch-ui:before{content:"";position:absolute;height:15px;width:15px;left:3px;top:3px;background:white;border-radius:50%;transition:.18s;box-shadow:0 1px 2px #0002}
+    .switch input:checked+.switch-ui{background:var(--green)}.switch input:checked+.switch-ui:before{transform:translateX(15px)}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+    .btn{border:1px solid var(--line);background:white;color:var(--ink);border-radius:8px;min-height:40px;padding:9px 12px;font-weight:700;font-size:12px}
+    .btn:hover{background:#f8faf8;border-color:#cbd7cd}.btn-primary{grid-column:1/-1;background:var(--green);border-color:var(--green);color:white;min-height:44px;font-size:13px}
+    .btn-primary:hover{background:var(--green-dark);border-color:var(--green-dark)}.btn:disabled{opacity:.6;cursor:wait}
+    .reset{background:transparent;border:0;color:var(--muted);font-size:11px;padding:10px 4px;text-decoration:underline;text-underline-offset:3px}
+    .control-foot{margin-top:16px;border-top:1px solid var(--line);padding-top:13px;color:var(--muted);font-size:11px}.control-foot strong{color:var(--ink)}
+    .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .metric{background:var(--white);border:1px solid var(--line);border-radius:11px;padding:17px 18px;min-height:112px;box-shadow:var(--shadow)}
+    .metric-label{color:var(--muted);font-size:11px;font-weight:600}
+    .metric-value{font-family:Manrope,sans-serif;font-size:25px;letter-spacing:-.05em;font-weight:700;line-height:1.2;margin:10px 0 4px;font-variant-numeric:tabular-nums}
+    .metric-sub{font-size:10px;color:var(--muted)}.right-stack{display:grid;gap:14px}
+    .panel-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:17px}
+    .chart-tabs{display:flex;gap:4px;padding:3px;border:1px solid var(--line);background:#f8faf8;border-radius:8px;flex:none}
+    .chart-tab{background:transparent;border:0;color:var(--muted);font-size:10px;font-weight:700;padding:6px 8px;border-radius:5px}
+    .chart-tab.active{background:white;color:var(--green-dark);box-shadow:0 1px 3px #1b36251c}
+    .chart-wrap{height:260px;position:relative}.chart-wrap.tall{height:300px}
+    .chart-legend{font-size:11px;color:var(--muted);display:flex;gap:16px;margin-top:12px;align-items:center}
+    .legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--green)}.legend-dot.gray{background:#9ba69d}
+    .activity{margin-top:16px}.table-wrap{overflow:auto}
+    table{border-collapse:collapse;width:100%;font-size:11px;text-align:left}
+    th{font-weight:700;color:#7b867e;text-transform:uppercase;letter-spacing:.07em;font-size:9px;white-space:nowrap}
+    td,th{padding:11px 10px;border-bottom:1px solid #edf0ec}tbody tr:last-child td{border-bottom:0}
+    td{white-space:nowrap}.empty{text-align:center;color:var(--muted);white-space:normal;padding:27px!important}
+    .merchant{font-weight:700;color:var(--ink)}.subtle{font-size:10px;color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:99px;font-size:10px;font-weight:700}
+    .pill.good{color:var(--green-dark);background:var(--green-pale)}.pill.bad{color:#8e4841;background:#f7ebe9}.pill.neutral{color:#56615a;background:#eff1ef}
+    details{border-top:1px solid var(--line);margin-top:14px;padding-top:14px}summary{cursor:pointer;font-size:12px;font-weight:700;color:var(--ink)}
+    summary::marker{color:var(--green)}.advanced-note{font-size:11px;color:var(--muted);margin:8px 0 14px}
+    .footer-note{color:#879188;font-size:10px;margin:17px 2px 0}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:850px){.layout{grid-template-columns:1fr}.controls{position:static}}
+    @media(max-width:600px){.topbar{height:58px}.topbar-inner,.wrap{width:calc(100% - 28px)}.wrap{padding:27px 0 42px}.intro{display:block;margin-bottom:20px}.demo-tag{display:inline-block;margin-top:14px}.metrics{grid-template-columns:1fr 1fr}.metric{padding:14px;min-height:100px}.metric:last-child{grid-column:1/-1}.metric-value{font-size:22px}.panel-pad{padding:16px}.panel-heading{display:block}.chart-tabs{margin-top:13px;width:max-content;max-width:100%}.chart-tab{padding:6px 7px}.chart-wrap{height:220px}.chart-wrap.tall{height:250px}.topmeta{font-size:10px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen">
-
-    <!-- Top Navigation Header -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="h-10 w-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-extrabold text-xl shadow-sm">
-                    🌱
-                </div>
-                <div>
-                    <h1 class="text-lg font-bold text-slate-900 leading-tight">NudgeVest</h1>
-                    <p class="text-xs text-slate-500">Contextual Bandit Micro-Investing MVP</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-3">
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    <span class="w-2 h-2 mr-1.5 bg-emerald-500 rounded-full pulse-live"></span> Localhost:8000
-                </span>
-                <span class="text-xs text-slate-400">|</span>
-                <span class="text-xs text-slate-600 font-mono bg-slate-100 px-2 py-1 rounded">XGBoost + Thompson Sampling</span>
-            </div>
+<body>
+  <header class="topbar"><div class="topbar-inner">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">n</span><span>NudgeVest</span></div>
+    <div class="topmeta"><span class="status-dot" aria-hidden="true"></span><span>Interactive product demo</span></div>
+  </div></header>
+  <main class="wrap">
+    <section class="intro" aria-labelledby="pageTitle">
+      <div><div class="eyebrow">Behavioral investing · simulator</div><h1 id="pageTitle">Small choices, made visible.</h1><p>Explore how timely saving prompts can shape a simulated investing habit.</p></div>
+      <span class="demo-tag">SIMULATED DATA · NO REAL MONEY</span>
+    </section>
+    <div class="layout">
+      <aside class="panel panel-pad controls" aria-labelledby="controlsTitle">
+        <div class="control-head"><h2 id="controlsTitle" class="section-title">Run a simulation</h2><p class="section-note">Choose how many everyday transactions to model.</p></div>
+        <label class="field-label" for="tickSlider"><span>Transactions</span><span><b id="sliderValue">50</b> events</span></label>
+        <input id="tickSlider" type="range" min="10" max="250" value="50" step="10" aria-label="Number of transactions to simulate">
+        <div class="range-ends"><span>10</span><span>250</span></div>
+        <div class="toggle-row"><div class="toggle-copy"><strong>Adaptive recommendations</strong><small>Compare contextual learning with random selection</small></div><label class="switch"><input id="hybridToggle" type="checkbox" checked aria-label="Use adaptive recommendations"><span class="switch-ui"></span></label></div>
+        <div class="actions">
+          <button id="runBtn" class="btn btn-primary" type="button" onclick="runSimulation()"><span id="runSpinner" class="sr-only">Working. </span><span id="runText">Run simulation</span></button>
+          <button class="btn" type="button" onclick="stepOneTick()">One step</button>
+          <button class="btn" type="button" onclick="switchChartTab('portfolio');document.getElementById('analyticsTitle').scrollIntoView({behavior:'smooth',block:'start'})">View portfolio</button>
         </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-
-        <!-- Control Bar Card -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex flex-wrap items-center justify-between gap-4">
-            <div class="flex flex-wrap items-center gap-4">
-                <div class="flex items-center space-x-2">
-                    <label for="tickSlider" class="text-sm font-semibold text-slate-700">Simulate Ticks:</label>
-                    <input type="range" id="tickSlider" min="10" max="250" step="10" value="50" class="w-32 accent-emerald-600">
-                    <span id="sliderValue" class="text-sm font-mono font-bold bg-slate-100 px-2 py-0.5 rounded text-slate-800">50</span>
-                </div>
-
-                <div class="h-6 w-px bg-slate-200 hidden sm:block"></div>
-
-                <label class="flex items-center space-x-2 cursor-pointer text-sm font-medium text-slate-700">
-                    <input type="checkbox" id="hybridToggle" checked class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
-                    <span>Hybrid XGBoost Weighting</span>
-                </label>
-            </div>
-
-            <div class="flex items-center space-x-2">
-                <button id="stepBtn" onclick="stepOneTick()" class="px-3.5 py-2 text-sm font-semibold rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 transition flex items-center space-x-1.5">
-                    <span>⚡ Step 1</span>
-                </button>
-                <button id="runBtn" onclick="runSimulation()" class="px-5 py-2 text-sm font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition flex items-center space-x-2">
-                    <span id="runSpinner" class="hidden animate-spin">⏳</span>
-                    <span id="runText">▶ Run Simulation</span>
-                </button>
-                <button id="resetBtn" onclick="resetSimulation()" class="px-3.5 py-2 text-sm font-semibold rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 transition">
-                    🔄 Reset
-                </button>
-            </div>
+        <div style="text-align:right"><button class="reset" type="button" onclick="resetSimulation()">Reset this demo</button></div>
+        <div class="control-foot"><strong>What you’re seeing</strong><br>Sample transactions, simulated choices and illustrative market movement. Nothing here is connected to an account or a real investment.</div>
+      </aside>
+      <section class="right-stack" aria-label="Simulation results">
+        <div class="metrics" aria-live="polite" aria-atomic="true">
+          <article class="metric"><div class="metric-label">Simulated portfolio</div><div id="kpiBalance" class="metric-value">$0.00</div><div id="kpiGains" class="metric-sub">+$0.00 simulated change</div></article>
+          <article class="metric"><div class="metric-label">Contributions in demo</div><div id="kpiInvested" class="metric-value">$0.00</div><div class="metric-sub">From accepted simulated nudges</div></article>
+          <article class="metric"><div class="metric-label">Prompts accepted</div><div id="kpiAccepts" class="metric-value">0 of 0</div><div id="kpiBanditRate" class="metric-sub">0% acceptance rate</div></article>
         </div>
-
-        <!-- KPI Metric Cards Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Metric 1: Portfolio Balance -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
-                <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Portfolio Balance</p>
-                <h3 id="kpiBalance" class="text-2xl font-extrabold text-slate-900 mt-1">$0.00</h3>
-                <p id="kpiGains" class="text-xs font-semibold text-emerald-600 mt-1">+$0.00 market gain</p>
+        <section class="panel panel-pad" aria-labelledby="analyticsTitle">
+          <div class="panel-heading"><div><h2 id="analyticsTitle" class="section-title">How the approach learns</h2><p class="section-note">Compare the adaptive strategy with a random baseline.</p></div>
+            <div class="chart-tabs" role="tablist" aria-label="Choose a chart">
+              <button id="tabRewards" class="chart-tab active" type="button" role="tab" aria-selected="true" onclick="switchChartTab('rewards')">Learning</button>
+              <button id="tabPortfolio" class="chart-tab" type="button" role="tab" aria-selected="false" onclick="switchChartTab('portfolio')">Portfolio</button>
+              <button id="tabAcceptance" class="chart-tab" type="button" role="tab" aria-selected="false" onclick="switchChartTab('acceptance')">Acceptance</button>
             </div>
-
-            <!-- Metric 2: Total Invested -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
-                <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Total Micro-Deposits</p>
-                <h3 id="kpiInvested" class="text-2xl font-extrabold text-slate-900 mt-1">$0.00</h3>
-                <p id="kpiAccepts" class="text-xs text-slate-500 mt-1">0 accepted nudges</p>
-            </div>
-
-            <!-- Metric 3: Bandit Acceptance Rate -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
-                <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Bandit Acceptance Rate</p>
-                <h3 id="kpiBanditRate" class="text-2xl font-extrabold text-emerald-600 mt-1">0.0%</h3>
-                <p id="kpiLift" class="text-xs font-semibold text-emerald-700 mt-1">+0.0% vs Random</p>
-            </div>
-
-            <!-- Metric 4: Baseline Rate -->
-            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm">
-                <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Random Baseline Rate</p>
-                <h3 id="kpiRandomRate" class="text-2xl font-extrabold text-slate-600 mt-1">0.0%</h3>
-                <p id="kpiRegret" class="text-xs text-slate-500 mt-1">Regret: 0.00</p>
-            </div>
-        </div>
-
-        <!-- SECTION 1: Live Feed Table -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
-            <div class="flex items-center justify-between mb-4">
-                <div>
-                    <h2 class="text-base font-bold text-slate-900">1. 📡 Live Transaction & Nudge Feed</h2>
-                    <p class="text-xs text-slate-500">Latest simulated user transactions with selected behavioral nudge and live response.</p>
-                </div>
-                <span id="feedCount" class="text-xs font-mono bg-slate-100 px-2.5 py-1 rounded-full text-slate-600">Showing last 10</span>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                    <thead>
-                        <tr class="border-b border-slate-100 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                            <th class="pb-3 px-3">Tick</th>
-                            <th class="pb-3 px-3">Merchant / Category</th>
-                            <th class="pb-3 px-3">Amount</th>
-                            <th class="pb-3 px-3">Time</th>
-                            <th class="pb-3 px-3">Nudge Shown</th>
-                            <th class="pb-3 px-3">Outcome</th>
-                            <th class="pb-3 px-3">Portfolio Impact</th>
-                        </tr>
-                    </thead>
-                    <tbody id="feedTableBody" class="divide-y divide-slate-100">
-                        <tr>
-                            <td colspan="7" class="py-8 text-center text-sm text-slate-400">
-                                No transactions simulated yet. Click <b>▶ Run Simulation</b> to begin.
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- SECTION 2: Analytics & Regret Charts -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
-            <div class="flex items-center justify-between mb-4">
-                <div>
-                    <h2 class="text-base font-bold text-slate-900">2. 📊 Performance & Learning Analytics</h2>
-                    <p class="text-xs text-slate-500">Core proof point: Contextual bandit achieves higher reward and sub-linear regret vs. linear penalty of random baseline.</p>
-                </div>
-                <!-- Chart Tabs -->
-                <div class="flex space-x-4 border-b border-slate-200 text-sm">
-                    <button onclick="switchChartTab('rewards')" id="tabRewards" class="pb-2 tab-active transition">Rewards & Regret</button>
-                    <button onclick="switchChartTab('portfolio')" id="tabPortfolio" class="pb-2 text-slate-500 hover:text-slate-700 transition">Portfolio Growth</button>
-                    <button onclick="switchChartTab('acceptance')" id="tabAcceptance" class="pb-2 text-slate-500 hover:text-slate-700 transition">Rolling Acceptance</button>
-                </div>
-            </div>
-
-            <!-- Chart Containers -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="viewRewards">
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Cumulative Rewards (Accepted Nudges)</h4>
-                    <div class="h-64"><canvas id="rewardChart"></canvas></div>
-                </div>
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Cumulative Regret vs. Optimal Oracle</h4>
-                    <div class="h-64"><canvas id="regretChart"></canvas></div>
-                </div>
-            </div>
-
-            <div class="hidden grid grid-cols-1 gap-6" id="viewPortfolio">
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Portfolio Balance vs. Micro-Deposits ($)</h4>
-                    <div class="h-72"><canvas id="portfolioChart"></canvas></div>
-                </div>
-            </div>
-
-            <div class="hidden grid grid-cols-1 gap-6" id="viewAcceptance">
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Rolling Acceptance Rate (%) [20-Tick Window]</h4>
-                    <div class="h-72"><canvas id="rollingChart"></canvas></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION 3: Arm Stats Table -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
-            <div class="mb-4">
-                <h2 class="text-base font-bold text-slate-900">3. 🧪 Arm Stats & Posterior Parameter Inspection</h2>
-                <p class="text-xs text-slate-500">Live Bayesian posterior parameters Beta(α, β) and empirical conversion rates proving active learning.</p>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                    <thead>
-                        <tr class="border-b border-slate-100 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                            <th class="pb-3 px-3">Arm #</th>
-                            <th class="pb-3 px-3">Nudge Type</th>
-                            <th class="pb-3 px-3">Impressions (Pulls)</th>
-                            <th class="pb-3 px-3">Acceptances</th>
-                            <th class="pb-3 px-3">Empirical Rate</th>
-                            <th class="pb-3 px-3">Global Alpha (α)</th>
-                            <th class="pb-3 px-3">Global Beta (β)</th>
-                            <th class="pb-3 px-3">Posterior Mean E[θ]</th>
-                        </tr>
-                    </thead>
-                    <tbody id="armStatsTableBody" class="divide-y divide-slate-100 font-mono text-xs">
-                        <tr>
-                            <td colspan="8" class="py-6 text-center text-slate-400">Loading arm statistics...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Frontend Script -->
-    <script>
-        let rewardChartInstance = null;
-        let regretChartInstance = null;
-        let portfolioChartInstance = null;
-        let rollingChartInstance = null;
-
-        // Slider sync
-        const slider = document.getElementById('tickSlider');
-        const sliderValue = document.getElementById('sliderValue');
-        slider.addEventListener('input', (e) => {
-            sliderValue.innerText = e.target.value;
-        });
-
-        // Initialize Charts
-        function initCharts() {
-            const ctxReward = document.getElementById('rewardChart').getContext('2d');
-            rewardChartInstance = new Chart(ctxReward, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [
-                        { label: 'Bandit (Hybrid)', data: [], borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 2.5, tension: 0.1, fill: false },
-                        { label: 'Random Baseline', data: [], borderColor: '#94A3B8', borderWidth: 2, borderDash: [4, 4], tension: 0.1, fill: false }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } } } }
-            });
-
-            const ctxRegret = document.getElementById('regretChart').getContext('2d');
-            regretChartInstance = new Chart(ctxRegret, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [
-                        { label: 'Bandit Regret', data: [], borderColor: '#3B82F6', borderWidth: 2.5, tension: 0.1 },
-                        { label: 'Random Regret', data: [], borderColor: '#EF4444', borderWidth: 2, borderDash: [4, 4], tension: 0.1 }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } } } }
-            });
-
-            const ctxPort = document.getElementById('portfolioChart').getContext('2d');
-            portfolioChartInstance = new Chart(ctxPort, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [
-                        { label: 'Portfolio Balance ($)', data: [], borderColor: '#059669', backgroundColor: 'rgba(5, 150, 105, 0.1)', borderWidth: 2.5, fill: true },
-                        { label: 'Principal Deposits ($)', data: [], borderColor: '#64748B', borderWidth: 2, borderDash: [4, 4] }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } } } }
-            });
-
-            const ctxRoll = document.getElementById('rollingChart').getContext('2d');
-            rollingChartInstance = new Chart(ctxRoll, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [
-                        { label: 'Bandit Rolling Acceptance (%)', data: [], borderColor: '#10B981', borderWidth: 2.5 },
-                        { label: 'Random Rolling Acceptance (%)', data: [], borderColor: '#94A3B8', borderWidth: 2, borderDash: [4, 4] }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100 } } }
-            });
-        }
-
-        function switchChartTab(tab) {
-            document.getElementById('viewRewards').classList.add('hidden');
-            document.getElementById('viewPortfolio').classList.add('hidden');
-            document.getElementById('viewAcceptance').classList.add('hidden');
-
-            document.getElementById('tabRewards').className = 'pb-2 text-slate-500 hover:text-slate-700 transition';
-            document.getElementById('tabPortfolio').className = 'pb-2 text-slate-500 hover:text-slate-700 transition';
-            document.getElementById('tabAcceptance').className = 'pb-2 text-slate-500 hover:text-slate-700 transition';
-
-            if (tab === 'rewards') {
-                document.getElementById('viewRewards').classList.remove('hidden');
-                document.getElementById('tabRewards').className = 'pb-2 tab-active transition';
-            } else if (tab === 'portfolio') {
-                document.getElementById('viewPortfolio').classList.remove('hidden');
-                document.getElementById('tabPortfolio').className = 'pb-2 tab-active transition';
-            } else if (tab === 'acceptance') {
-                document.getElementById('viewAcceptance').classList.remove('hidden');
-                document.getElementById('tabAcceptance').className = 'pb-2 tab-active transition';
-            }
-        }
-
-        // Render Dashboard Data
-        function renderDashboard(data) {
-            // Update KPIs
-            const k = data.kpis;
-            document.getElementById('kpiBalance').innerText = `$${k.portfolio_balance.toFixed(2)}`;
-            document.getElementById('kpiGains').innerText = `${k.market_gain >= 0 ? '+' : ''}$${k.market_gain.toFixed(2)} market gain`;
-            document.getElementById('kpiInvested').innerText = `$${k.total_contributions.toFixed(2)}`;
-            document.getElementById('kpiAccepts').innerText = `${k.cum_reward_bandit} of ${k.total_ticks} accepted`;
-            document.getElementById('kpiBanditRate').innerText = `${k.bandit_acceptance_rate.toFixed(1)}%`;
-            document.getElementById('kpiLift').innerText = `${k.acceptance_lift >= 0 ? '+' : ''}${k.acceptance_lift.toFixed(1)}% vs Random`;
-            document.getElementById('kpiRandomRate').innerText = `${k.random_acceptance_rate.toFixed(1)}%`;
-            document.getElementById('kpiRegret').innerText = `Bandit Regret: ${k.cum_regret_bandit.toFixed(1)} vs ${k.cum_regret_random.toFixed(1)}`;
-
-            // Render Live Feed
-            const tbody = document.getElementById('feedTableBody');
-            if (!data.live_feed || data.live_feed.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-sm text-slate-400">No transactions simulated yet. Click <b>▶ Run Simulation</b> to begin.</td></tr>`;
-            } else {
-                tbody.innerHTML = data.live_feed.map(row => {
-                    let badge = '';
-                    if (row.bandit_arm === 4) {
-                        badge = `<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">Control (No Nudge)</span>`;
-                    } else if (row.bandit_accepted) {
-                        badge = `<span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">✓ Accepted</span>`;
-                    } else {
-                        badge = `<span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800">✕ Declined</span>`;
-                    }
-                    return `
-                        <tr class="hover:bg-slate-50/70 transition">
-                            <td class="py-3 px-3 font-mono font-bold text-slate-500">#${row.tick}</td>
-                            <td class="py-3 px-3 font-medium text-slate-900">${row.merchant} <span class="text-xs text-slate-400">(${row.category})</span></td>
-                            <td class="py-3 px-3 font-mono font-semibold">$${row.amount.toFixed(2)}</td>
-                            <td class="py-3 px-3 text-xs text-slate-500">${row.day_name} @ ${String(row.hour).padStart(2, '0')}:00</td>
-                            <td class="py-3 px-3 text-slate-700 font-medium">${row.bandit_arm_name}</td>
-                            <td class="py-3 px-3">${badge}</td>
-                            <td class="py-3 px-3 font-mono text-xs ${row.bandit_accepted ? 'font-bold text-emerald-600' : 'text-slate-400'}">${row.bandit_accepted ? `+$${row.invested_amount.toFixed(2)}` : '$0.00'}</td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-
-            // Render Arm Stats Table
-            const statsBody = document.getElementById('armStatsTableBody');
-            statsBody.innerHTML = data.arm_stats.map(s => `
-                <tr class="hover:bg-slate-50/70 transition">
-                    <td class="py-3 px-3 font-bold text-slate-700">#${s.arm_index}</td>
-                    <td class="py-3 px-3 font-sans font-medium text-slate-900">${s.arm_name}</td>
-                    <td class="py-3 px-3 font-bold">${s.pulls}</td>
-                    <td class="py-3 px-3">${s.acceptances}</td>
-                    <td class="py-3 px-3 font-bold ${s.empirical_rate > 0.5 ? 'text-emerald-600' : 'text-slate-700'}">${(s.empirical_rate * 100).toFixed(1)}%</td>
-                    <td class="py-3 px-3 text-slate-500">${s.global_alpha.toFixed(1)}</td>
-                    <td class="py-3 px-3 text-slate-500">${s.global_beta.toFixed(1)}</td>
-                    <td class="py-3 px-3 font-bold text-emerald-700">${s.posterior_mean.toFixed(3)}</td>
-                </tr>
-            `).join('');
-
-            // Update Charts
-            const c = data.charts;
-            if (c && c.ticks && c.ticks.length > 0) {
-                rewardChartInstance.data.labels = c.ticks;
-                rewardChartInstance.data.datasets[0].data = c.reward_bandit;
-                rewardChartInstance.data.datasets[1].data = c.reward_random;
-                rewardChartInstance.update();
-
-                regretChartInstance.data.labels = c.ticks;
-                regretChartInstance.data.datasets[0].data = c.regret_bandit;
-                regretChartInstance.data.datasets[1].data = c.regret_random;
-                regretChartInstance.update();
-
-                portfolioChartInstance.data.labels = c.ticks;
-                portfolioChartInstance.data.datasets[0].data = c.portfolio_balance;
-                portfolioChartInstance.data.datasets[1].data = c.total_contributions;
-                portfolioChartInstance.update();
-
-                rollingChartInstance.data.labels = c.rolling_ticks;
-                rollingChartInstance.data.datasets[0].data = c.rolling_bandit;
-                rollingChartInstance.data.datasets[1].data = c.rolling_random;
-                rollingChartInstance.update();
-            }
-        }
-
-        // API Calls
-        async function fetchState() {
-            try {
-                const res = await fetch('/api/state');
-                const data = await res.json();
-                renderDashboard(data);
-            } catch (err) {
-                console.error("Fetch state error:", err);
-            }
-        }
-
-        async function runSimulation() {
-            const ticks = parseInt(document.getElementById('tickSlider').value);
-            const useHybrid = document.getElementById('hybridToggle').checked;
-            const runBtn = document.getElementById('runBtn');
-            const runSpinner = document.getElementById('runSpinner');
-            const runText = document.getElementById('runText');
-
-            runBtn.disabled = true;
-            runSpinner.classList.remove('hidden');
-            runText.innerText = "Simulating...";
-
-            try {
-                const res = await fetch('/api/simulate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ticks: ticks, use_hybrid: useHybrid })
-                });
-                const data = await res.json();
-                renderDashboard(data);
-            } catch (err) {
-                console.error("Run simulation error:", err);
-            } finally {
-                runBtn.disabled = false;
-                runSpinner.classList.add('hidden');
-                runText.innerText = "▶ Run Simulation";
-            }
-        }
-
-        async function stepOneTick() {
-            const useHybrid = document.getElementById('hybridToggle').checked;
-            try {
-                const res = await fetch('/api/step', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ticks: 1, use_hybrid: useHybrid })
-                });
-                const data = await res.json();
-                renderDashboard(data);
-            } catch (err) {
-                console.error("Step error:", err);
-            }
-        }
-
-        async function resetSimulation() {
-            if (!confirm("Are you sure you want to reset the simulation state?")) return;
-            try {
-                const res = await fetch('/api/reset', { method: 'POST' });
-                const data = await res.json();
-                renderDashboard(data);
-            } catch (err) {
-                console.error("Reset error:", err);
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            initCharts();
-            fetchState();
-        });
-    </script>
+          </div>
+          <div id="viewRewards" class="chart-wrap"><canvas id="rewardChart" role="img" aria-label="Cumulative accepted prompts for adaptive and random strategies"></canvas></div>
+          <div id="viewPortfolio" class="chart-wrap tall" hidden><canvas id="portfolioChart" role="img" aria-label="Illustrative simulated portfolio balance and contributions"></canvas></div>
+          <div id="viewAcceptance" class="chart-wrap tall" hidden><canvas id="rollingChart" role="img" aria-label="Rolling acceptance rates for adaptive and random strategies"></canvas></div>
+          <div class="chart-legend"><span><i class="legend-dot"></i>Adaptive</span><span><i class="legend-dot gray"></i>Random baseline</span><span id="kpiLift" class="subtle">0.0% difference</span></div>
+          <div id="kpiRandomRate" class="sr-only">0% random baseline rate</div><div id="kpiRegret" class="sr-only">Regret details</div>
+        </section>
+      </section>
+    </div>
+    <section class="panel panel-pad activity" aria-labelledby="activityTitle">
+      <div class="panel-heading"><div><h2 id="activityTitle" class="section-title">Recent simulated activity</h2><p class="section-note">A clear view of each prompt, response and illustrative contribution.</p></div><span class="subtle" id="activityCount">Latest 10 events</span></div>
+      <div class="table-wrap"><table><thead><tr><th scope="col">Event</th><th scope="col">Purchase</th><th scope="col">Amount</th><th scope="col">Prompt</th><th scope="col">Outcome</th><th scope="col">Demo contribution</th></tr></thead><tbody id="feedTableBody"><tr><td colspan="6" class="empty">Choose “Run simulation” to see how the model responds to everyday spending.</td></tr></tbody></table></div>
+      <details><summary>Explore strategy performance</summary><p class="advanced-note">Research view: simulated comparisons and posterior estimates. These measures describe this run only and do not predict real-world outcomes.</p>
+        <div class="table-wrap"><table><thead><tr><th scope="col">Strategy</th><th scope="col">Selections</th><th scope="col">Acceptances</th><th scope="col">Observed rate</th><th scope="col">Alpha</th><th scope="col">Beta</th><th scope="col">Posterior mean</th></tr></thead><tbody id="armStatsTableBody"><tr><td colspan="7" class="empty">Run the simulation to view strategy statistics.</td></tr></tbody></table></div>
+      </details>
+    </section>
+    <p class="footer-note">NudgeVest is an educational simulation. Portfolio values and market movement are generated for demonstration and are not financial advice or actual investment performance.</p>
+  </main>
+  <script>
+    let rewardChartInstance=null,regretChartInstance=null,portfolioChartInstance=null,rollingChartInstance=null;
+    const slider=document.getElementById("tickSlider");
+    slider.addEventListener("input",function(){document.getElementById("sliderValue").textContent=slider.value;});
+    function switchChartTab(tab){
+      const views={rewards:"viewRewards",portfolio:"viewPortfolio",acceptance:"viewAcceptance"};
+      const buttons={rewards:"tabRewards",portfolio:"tabPortfolio",acceptance:"tabAcceptance"};
+      Object.keys(views).forEach(function(key){document.getElementById(views[key]).hidden=key!==tab;const b=document.getElementById(buttons[key]);b.classList.toggle("active",key===tab);b.setAttribute("aria-selected",key===tab?"true":"false");});
+      if(tab==="portfolio"&&portfolioChartInstance)portfolioChartInstance.resize();
+      if(tab==="acceptance"&&rollingChartInstance)rollingChartInstance.resize();
+      if(tab==="rewards"&&rewardChartInstance){rewardChartInstance.resize();regretChartInstance.resize();}
+    }
+    function makeLineChart(id,sets,format){
+      return new Chart(document.getElementById(id).getContext("2d"),{type:"line",data:{labels:[],datasets:sets.map(function(s){return{label:s.label,data:[],borderColor:s.color,backgroundColor:s.fill||"transparent",borderWidth:2,borderDash:s.dash||[],pointRadius:0,pointHoverRadius:4,tension:.28,fill:!!s.fill};})},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:"index"},plugins:{legend:{display:false},tooltip:{backgroundColor:"#202923",padding:10,titleFont:{family:"DM Sans"},bodyFont:{family:"DM Sans"}}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7,color:"#7b867e",font:{size:10}}},y:{beginAtZero:true,grid:{color:"#edf0ec"},ticks:{color:"#7b867e",font:{size:10},callback:format||undefined}}}}});
+    }
+    function initCharts(){
+      rewardChartInstance=makeLineChart("rewardChart",[{label:"Adaptive",color:"#26734d"},{label:"Random baseline",color:"#a8b0a9",dash:[5,4]}]);
+      regretChartInstance=makeLineChart("regretChart",[{label:"Adaptive regret",color:"#26734d"},{label:"Random regret",color:"#a8b0a9",dash:[5,4]}]);
+      portfolioChartInstance=makeLineChart("portfolioChart",[{label:"Simulated balance",color:"#26734d",fill:"rgba(38,115,77,.08)"},{label:"Contributions",color:"#c89543",dash:[5,4]}],function(v){return "$"+Number(v).toFixed(0);});
+      rollingChartInstance=makeLineChart("rollingChart",[{label:"Adaptive",color:"#26734d"},{label:"Random baseline",color:"#a8b0a9",dash:[5,4]}],function(v){return v+"%";});
+    }
+    function escapeHTML(value){return String(value==null?"":value).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+    function money(v){return "$"+Number(v||0).toFixed(2);}
+    function renderDashboard(data){
+      const k=data.kpis||{},c=data.charts||{};
+      document.getElementById("kpiBalance").textContent=money(k.portfolio_balance);
+      const gain=Number(k.market_gain||0);
+      document.getElementById("kpiGains").textContent=(gain>=0?"+":"−")+money(Math.abs(gain))+" simulated change";
+      document.getElementById("kpiInvested").textContent=money(k.total_contributions);
+      document.getElementById("kpiAccepts").textContent=String(k.cum_reward_bandit||0)+" of "+String(k.total_ticks||0);
+      document.getElementById("kpiBanditRate").textContent=Number(k.bandit_acceptance_rate||0).toFixed(1)+"% adaptive acceptance";
+      document.getElementById("kpiLift").textContent=(Number(k.acceptance_lift||0)>=0?"+":"")+Number(k.acceptance_lift||0).toFixed(1)+" pts vs random";
+      document.getElementById("kpiRandomRate").textContent=Number(k.random_acceptance_rate||0).toFixed(1)+"% random baseline rate";
+      document.getElementById("kpiRegret").textContent="Adaptive regret "+Number(k.cum_regret_bandit||0).toFixed(1)+" vs random "+Number(k.cum_regret_random||0).toFixed(1);
+      const feed=document.getElementById("feedTableBody"),rows=data.live_feed||[];
+      document.getElementById("activityCount").textContent=rows.length?("Showing "+rows.length+" most recent events"):"Latest 10 events";
+      if(!rows.length){feed.innerHTML='<tr><td colspan="6" class="empty">Choose “Run simulation” to see how the model responds to everyday spending.</td></tr>';}
+      else{feed.innerHTML=rows.map(function(row){
+        const accepted=!!row.bandit_accepted,control=Number(row.bandit_arm)===4;
+        const pill=control?'<span class="pill neutral">No prompt</span>':(accepted?'<span class="pill good">Accepted</span>':'<span class="pill bad">Declined</span>');
+        return '<tr><td class="subtle">#'+escapeHTML(row.tick)+'</td><td><span class="merchant">'+escapeHTML(row.merchant)+'</span><br><span class="subtle">'+escapeHTML(row.category)+' · '+escapeHTML(row.day_name)+'</span></td><td>'+money(row.amount)+'</td><td>'+escapeHTML(row.bandit_arm_name)+'</td><td>'+pill+'</td><td>'+(accepted?money(row.invested_amount):"$0.00")+'</td></tr>';
+      }).join("");}
+      const stats=document.getElementById("armStatsTableBody"),arms=data.arm_stats||[];
+      if(arms.length){stats.innerHTML=arms.map(function(s){return '<tr><td>'+escapeHTML(s.arm_name)+'</td><td>'+escapeHTML(s.pulls)+'</td><td>'+escapeHTML(s.acceptances)+'</td><td>'+Number(s.empirical_rate*100).toFixed(1)+'%</td><td>'+Number(s.global_alpha).toFixed(1)+'</td><td>'+Number(s.global_beta).toFixed(1)+'</td><td>'+Number(s.posterior_mean).toFixed(3)+'</td></tr>';}).join("");}
+      if(c.ticks&&c.ticks.length){
+        rewardChartInstance.data.labels=c.ticks;rewardChartInstance.data.datasets[0].data=c.reward_bandit;rewardChartInstance.data.datasets[1].data=c.reward_random;rewardChartInstance.update("none");
+        regretChartInstance.data.labels=c.ticks;regretChartInstance.data.datasets[0].data=c.regret_bandit;regretChartInstance.data.datasets[1].data=c.regret_random;regretChartInstance.update("none");
+        portfolioChartInstance.data.labels=c.ticks;portfolioChartInstance.data.datasets[0].data=c.portfolio_balance;portfolioChartInstance.data.datasets[1].data=c.total_contributions;portfolioChartInstance.update("none");
+        rollingChartInstance.data.labels=c.rolling_ticks;rollingChartInstance.data.datasets[0].data=c.rolling_bandit;rollingChartInstance.data.datasets[1].data=c.rolling_random;rollingChartInstance.update("none");
+      }
+    }
+    async function apiCall(path,options){
+      const res=await fetch(path,options||{});
+      if(!res.ok)throw new Error("Request failed ("+res.status+")");
+      return res.json();
+    }
+    async function fetchState(){try{renderDashboard(await apiCall("/api/state"));}catch(e){console.error("Could not load simulation state",e);}}
+    async function runSimulation(){
+      const btn=document.getElementById("runBtn"),text=document.getElementById("runText"),hybrid=document.getElementById("hybridToggle").checked;
+      btn.disabled=true;text.textContent="Running simulation…";
+      try{renderDashboard(await apiCall("/api/simulate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ticks:Number(slider.value),use_hybrid:hybrid})}));}
+      catch(e){text.textContent="Could not run — try again";console.error(e);}
+      finally{btn.disabled=false;if(text.textContent==="Running simulation…")text.textContent="Run simulation";else setTimeout(function(){text.textContent="Run simulation";},2200);}
+    }
+    async function stepOneTick(){
+      const btn=document.querySelector('button[onclick="stepOneTick()"]');btn.disabled=true;
+      try{renderDashboard(await apiCall("/api/step",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ticks:1,use_hybrid:document.getElementById("hybridToggle").checked})}));}
+      catch(e){console.error("Could not add a simulation step",e);}
+      finally{btn.disabled=false;}
+    }
+    async function resetSimulation(){
+      if(!window.confirm("Reset this demo and clear its simulated history?"))return;
+      try{renderDashboard(await apiCall("/api/reset",{method:"POST"}));}
+      catch(e){console.error("Could not reset simulation",e);}
+    }
+    window.addEventListener("DOMContentLoaded",function(){initCharts();fetchState();});
+  </script>
 </body>
-</html>
-"""
+</html>"""
 
 
 @app.get("/", response_class=HTMLResponse)
